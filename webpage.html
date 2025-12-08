@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>blond</title>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+    
+    <header>
+
+    <input type="checkbox" name="" id="toggler">
+    <label for="toggler" class="fas fa-bars"></label>
+
+    <a href="#home">
+        <img src="img/13.png" alt="Blonde Logo">
+    </a>
+
+    <nav class="navbar">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#products">Shop</a>
+        <a href="#contact">Contact us</a>
+    </nav>
+
+    <div class="icons" style="display: flex; align-items: center; gap: 1rem;">
+        <!-- Icons already present -->
+        <a href="https://www.instagram.com/itsfrankocean/" class="fab fa-instagram" style="color: brown;" target="_blank"></a>
+        <a href="https://open.spotify.com/album/3mH6qwIy9crq0I9YQbOuDf?si=e4d8455574a24821" class="fab fa-spotify" style="color: var(--green);" target="_blank"></a>
+        <a href="https://www.youtube.com/channel/UCqf-kTp9ERV5T1rPayno7LA" class="fab fa-youtube" style="color:red" target="_blank"></a>
+        <a href="cart.html" class="fas fa-shopping-cart"></a>
+        <a href="favorites.html" class="fas fa-heart"></a>
+        
+        <!-- === NEW AUTHENTICATION CONTROLS === -->
+        <div style="font-size: 1.7rem; display: flex; align-items: center; gap: 0.5rem;">
+            <!-- Icon shown when logged out -->
+            <a href="login.html" id="guest-icon" class="fas fa-user" style="color: #666;" title="Login"></a>
+            
+            <!-- User Display: Will show "Welcome, Guest" or "Welcome, [Username]" -->
+            <span id="user-display" style="color: #333; font-weight: bold; font-size: 1.5rem;">Welcome, Guest</span>
+            
+            <!-- Login Link: Shown when logged out -->
+            <a href="login.html" id="login-link" style="color: var(--green); text-decoration: underline; font-size: 1.5rem;">Login</a>
+            
+            <!-- Logout Button: Shown when logged in (set to display:none by default, visibility managed by script.js) -->
+            <button id="logout-btn" onclick="handleLogout()" class="btn" style="padding: .5rem 1.5rem; font-size: 1.5rem; margin-top: 0; background-color: #a00; display: none;">Logout</button>
+        </div>
+    </div>
+
+</header>
+
+<section class="home" id="home">
+
+    <div class="content">
+        <h3>Blonde Merchandise</h3>
+        <span>The home for official blonde merchandise.</span>
+        <br />
+        <a href="#products" class="btn">Buy now!</a>
+    </div>
+
+</section>
+
+<section class="about" id="about">
+
+    <h1 class="heading"><span>About</span> the website</h1>
+    <div class="row">
+
+        <div class="video-container">
+            <video src="img/2.mp4" loop autoplay muted></video>
+            <h3>Frank Ocean's newest album</h3>
+        </div>
+    
+        <div class="content">
+            <h3>Why this website?</h3>
+            <p>This is the only official website where you can buy Frank Ocean's Blonde merchandise.</p>
+            <p>We release high quality products that favors the fans' demands.</p>
+            <a href='#' class="btn">Learn More</a>
+        </div>
+
+    </div>
+
+</section>
+<section class="icons-container">
+
+<div class="icons">
+    <img src="img/3.png" alt="Delivery Truck Icon">
+    <div class="info">
+        <h3>Free Delivery</h3>
+        <span>on all orders</span>
+    </div>
+</div>
+
+    <div class="icons">
+        <img src="img/4.png" alt="Return Icon">
+        <div class="info">
+            <h3>10 Days Return</h3>
+            <span>moneyback guarantee</span>
+        </div>
+    </div>
+
+    <div class="icons">
+        <img src="img/5.png" alt="Gift Box Icon">
+        <div class="info">
+            <h3>Offer and Gifts</h3>
+            <span>on all orders</span>
+        </div>
+    </div>
+
+    <div class="icons">
+        <img src="img/6.png" alt="Lock Icon">
+        <div class="info">
+            <h3>Secured Payments</h3>
+            <span>protected by paypal</span>
+        </div>
+    </div>
+
+</section>
+<section class="products" id="products">
+    <h1 class="heading"> Latest <span>Products</span> </h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <form>
+                <input type="hidden" name="name" value="Frank Ocean Blond Hoodie">
+                <input type="hidden" name="price" value="12.99">
+                <input type="hidden" name="image" value="img/7.jpg">
+
+                <div class="image">
+                    <img src="img/7.jpg" alt="Frank Ocean Blond Hoodie">
+                    <div class="icons">
+                        <a href="#" onclick="handleFavoriteClick(event, this.closest('form'))" class="fas fa-heart"></a>
+                        <a href="#" onclick="handleAddToCartClick(event, this.closest('form'))" class="cart-btn">add to cart</a>
+                        <a href="#" class="fas fa-share"></a>
+                    </div>
+                </div>
+                <div class="content">
+                    <h3>Frank Ocean Blond Hoodie</h3>
+                    <div class="price"> $12.99</div>
+                    
+                    <select name="size" class="size-select" required style="
+                        padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.3rem; margin-top: 1rem;
+                        font-size: 1.5rem; color: #333;
+                    ">
+                        <option value="">Select Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="box">
+            <form>
+                <input type="hidden" name="name" value="Frank Ocean Blond Crewneck">
+                <input type="hidden" name="price" value="12.99">
+                <input type="hidden" name="image" value="img/8.jpg">
+
+                <div class="image">
+                    <img src="img/8.jpg" alt="Frank Ocean Blond Crewneck">
+                    <div class="icons">
+                        <a href="#" onclick="handleFavoriteClick(event, this.closest('form'))" class="fas fa-heart"></a>
+                        <a href="#" onclick="handleAddToCartClick(event, this.closest('form'))" class="cart-btn">add to cart</a>
+                        <a href="#" class="fas fa-share"></a>
+                    </div>
+                </div>
+                <div class="content">
+                    <h3>Frank Ocean Blond Crewneck</h3>
+                    <div class="price"> $12.99</div>
+                    
+                    <select name="size" class="size-select" required style="
+                        padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.3rem; margin-top: 1rem;
+                        font-size: 1.5rem; color: #333;
+                    ">
+                        <option value="">Select Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="box">
+            <form>
+                <input type="hidden" name="name" value="Frank Ocean Vintage Tshirt">
+                <input type="hidden" name="price" value="12.99">
+                <input type="hidden" name="image" value="img/9.webp">
+
+                <div class="image">
+                    <img src="img/9.webp" alt="Frank Ocean Vintage Tshirt">
+                    <div class="icons">
+                        <a href="#" onclick="handleFavoritesClick(event, this.closest('form'))" class="fas fa-heart"></a>
+                        <a href="#" onclick="handleAddToCartClick(event, this.closest('form'))" class="cart-btn">add to cart</a>
+                        <a href="#" class="fas fa-share"></a>
+                    </div>
+                </div>
+                <div class="content">
+                    <h3>Frank Ocean Vintage Tshirt</h3>
+                    <div class="price"> $12.99</div>
+                    
+                    <select name="size" class="size-select" required style="
+                        padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.3rem; margin-top: 1rem;
+                        font-size: 1.5rem; color: #333;
+                    ">
+                        <option value="">Select Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="box">
+            <form>
+                <input type="hidden" name="name" value="Just Be Quiet Shirt">
+                <input type="hidden" name="price" value="12.99">
+                <input type="hidden" name="image" value="img/10.webp">
+
+                <div class="image">
+                    <img src="img/10.webp" alt="Just Be Quiet Shirt">
+                    <div class="icons">
+                        <a href="#" onclick="handleFavoriteClick(event, this.closest('form'))" class="fas fa-heart"></a>
+                        <a href="#" onclick="handleAddToCartClick(event, this.closest('form'))" class="cart-btn">add to cart</a>
+                        <a href="#" class="fas fa-share"></a>
+                    </div>
+                </div>
+                <div class="content">
+                    <h3>Just Be Quiet Shirt</h3>
+                    <div class="price"> $12.99</div>
+                    
+                    <select name="size" class="size-select" required style="
+                        padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.3rem; margin-top: 1rem;
+                        font-size: 1.5rem; color: #333;
+                    ">
+                        <option value="">Select Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</section>
+
+<section class="contact" id="contact">
+
+    <h1 class="heading"> <span> contact </span> us </h1>
+
+    <div class="row">
+
+        <!-- Added id="contact-form" and IDs to inputs -->
+        <form id="contactForm"action="save_message.php" method="POST">
+    <input type="text" placeholder="name" class="box" name="name" required>
+    <input type="email" placeholder="email" class="box" name="email" required>
+    <input type="number" placeholder="number" class="box" name="number">
+    <textarea name="message" class="box" placeholder="message" id="" cols="30" rows="10" required></textarea>
+    <input type="submit" value="send message" class="btn">
+    <p id="contact-message" style="font-size: 1.6rem; margin-top: 1rem;"></p>
+</form>
+
+        <div class="image">
+            <img src="img/11.png" alt="Contact Image">
+        </div>
+
+    </div>
+
+</section>
+<section class="footer">
+
+    <div class="box-container">
+
+        <div class="box">
+            <h3>Quick links</h3>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#products">Products</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <div class="box">
+            <h3>Extra links</h3>
+            <a href="#">My account</a>
+            <a href="#">My order</a>
+            <a href="#">My favorite</a>
+            <a href="https://open.spotify.com/album/3mH6qwIy9crq0I9YQbOuDf?si=e4d8455574a24821" target="_blank"> Listen to Blonde</a>
+        </div>
+
+        <div class="box">
+            <h3>Locations</h3>
+            <a href="#">Philippines</a>
+            <a href="#">USA</a>
+            <a href="#">Japan</a>
+            <a href="#">France</a>
+        </div>
+
+        <div class="box">
+            <h3>Contact info</h3>
+            <a href="#">+639548791247</a>
+            <a href="#">blonde.com</a>
+            <a href="#">Laguna, Philippines</a>
+            <img src="img/12.png" alt="Payment Methods">
+        </div>
+
+    </div>
+    <div class="credit"> Created by <span>Kobe Andrei R. Acosta</span> | all rights reserved</div>
+
+</section>
+
+<script src="script.js"></script>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent page reload
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    fetch('save_message.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Message Sent Successfully!'); // Existing popup
+            form.reset(); // Clear the form
+
+            // NEW: redirect to messagesent.html
+            window.location.href = 'messagesent.html';
+        } else {
+            alert('Error: ' + data.message); // Existing error handling
+        }
+    })
+    .catch(error => {
+        alert('An error occurred. Please try again.');
+        console.error(error);
+    });
+});
+</script>
+
+
+    </body>
+</html>

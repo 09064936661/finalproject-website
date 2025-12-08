@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* --- Keep your previous CSS for checkout --- */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+}
+.checkout h1 {
+    margin-top: 5rem;
+    text-align: center;
+    font-size: 2.5rem;
+    color: #333;
+}
+.checkout-container {
+    max-width: 900px;
+    margin: 2rem auto 5rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+/* Cart summary */
+.cart-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+.cart-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+.cart-item-info h4 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.4rem;
+    color: #333;
+}
+.cart-item-info span {
+    font-size: 1.2rem;
+    color: #666;
+}
+.cart-total {
+    text-align: right;
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding-top: 1rem;
+    border-top: 2px solid #333;
+}
+/* Checkout form */
+.checkout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.checkout-form input,
+.checkout-form select {
+    padding: 1rem;
+    font-size: 1.4rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+.checkout-form input:focus,
+.checkout-form select:focus {
+    border-color: #28a745;
+    outline: none;
+}
+.checkout-form button {
+    padding: 1rem;
+    font-size: 1.6rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.checkout-form button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+/* Message */
+#checkout-message {
+    font-size: 1.4rem;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    display: none;
+}
+#checkout-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+#checkout-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .checkout-container {
+        padding: 1rem;
+    }
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .cart-item img {
+        width: 80px;
+        height: 80px;
+    }
+    .cart-item-info span {
+        font-size: 1rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <input type="checkbox" id="toggler">
+    <label for="toggler" class="fas fa-bars"></label>
+
+    <a href="webpage.html">
+        <img src="img/13.png" alt="Blonde Logo" style="height:50px;">
+    </a>
+
+    <nav class="navbar">
+        <a href="webpage.html#home">Home</a>
+        <a href="webpage.html#about">About</a>
+        <a href="webpage.html#products">Shop</a>
+        <a href="webpage.html#contact">Contact</a>
+    </nav>
+</header>
+
+<section class="checkout">
+    <h1>Checkout</h1>
+
+    <div class="checkout-container">
+        <!-- Cart summary -->
+        <div class="cart-summary" id="cart-summary">
+            <p style="text-align: center; color:#999;">Loading cart...</p>
+        </div>
+
+        <!-- Checkout form -->
+        <form id="checkoutForm" class="checkout-form">
+            <input type="text" name="user_name" placeholder="Your Name" required />
+            <input type="text" name="contact_number" placeholder="Contact Number" required />
+            <input type="text" name="address" placeholder="Address" required />
+
+            <select name="payment_method" id="payment_method" required>
+                <option value="" disabled selected>Select Payment Method</option>
+                <option value="Cash on Delivery">Cash on Delivery</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="PayPal">PayPal</option>
+            </select>
+
+            <input type="hidden" name="total_amount" id="checkoutTotal" value="0" />
+
+            <button id="checkout-btn" type="submit" class="btn">Place Order</button>
+        </form>
+
+        <div id="checkout-message"></div>
+    </div>
+</section>
+
+<footer class="footer" style="text-align:center; padding:1rem; background:#f1f1f1;">
+    <div class="credit">Created by <span>Kobe Andrei R. Acosta</span> | All rights reserved</div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cartSummary = document.getElementById('cart-summary');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const submitBtn = document.getElementById('checkout-btn');
+    const totalInput = document.getElementById('checkoutTotal');
+    const messageEl = document.getElementById('checkout-message');
+    const paymentMethodSelect = document.getElementById('payment_method');
+
+    // Render cart
+    function renderCart() {
+        cartSummary.innerHTML = '';
+        if (cart.length === 0) {
+            cartSummary.innerHTML = '<p style="text-align: center; color:#999;">Your cart is empty.</p>';
+            submitBtn.disabled = true;
+            return;
+        }
+
+        let totalAmount = 0;
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            totalAmount += itemTotal;
+
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <img src="${item.image || 'img/placeholder.jpg'}" alt="${item.name}" onerror="this.src='img/placeholder.jpg'">
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <span>Size: ${item.size} | Qty: ${item.quantity} | $${itemTotal.toFixed(2)}</span>
+                </div>
+            `;
+            cartSummary.appendChild(div);
+        });
+
+        const totalDiv = document.createElement('div');
+        totalDiv.className = 'cart-total';
+        totalDiv.textContent = `Total: $${totalAmount.toFixed(2)}`;
+        cartSummary.appendChild(totalDiv);
+
+        totalInput.value = totalAmount.toFixed(2);
+        submitBtn.disabled = false;
+    }
+
+    renderCart();
+
+    // Show message
+    function showMessage(text, type) {
+        messageEl.textContent = text;
+        messageEl.className = type;
+        messageEl.style.display = 'block';
+        if(type==='error') setTimeout(()=>{messageEl.style.display='none'},5000);
+    }
+
+    // Update button text based on payment method
+    paymentMethodSelect.addEventListener('change', () => {
+        const method = paymentMethodSelect.value;
+        submitBtn.textContent = method === 'Cash on Delivery' ? 'Place Order' : 'Proceed to Payment';
+    });
+
+    // Handle form submission
+    checkoutForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const method = paymentMethodSelect.value;
+        if (!method) {
+            showMessage('Please select a payment method.', 'error');
+            return;
+        }
+        if(cart.length === 0){
+            showMessage('Your cart is empty!', 'error');
+            return;
+        }
+
+        const payload = {
+            cart,
+            user_name: checkoutForm.user_name.value.trim(),
+            contact_number: checkoutForm.contact_number.value.trim(),
+            address: checkoutForm.address.value.trim(),
+            payment_method: method,
+            total_amount: parseFloat(totalInput.value)
+        };
+
+        if (method === 'Cash on Delivery') {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                const res = await fetch('api.php?action=checkout', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMessage(data.message,'success');
+                    localStorage.removeItem('cart');
+                    checkoutForm.reset();
+                    renderCart();
+                    setTimeout(()=>window.location.href='webpage.html',2000);
+                } else {
+                    showMessage(data.message || 'Order failed','error');
+                    submitBtn.disabled=false;
+                    submitBtn.textContent='Place Order';
+                }
+            } catch(err){
+                console.error(err);
+                showMessage('Network error','error');
+                submitBtn.disabled=false;
+                submitBtn.textContent='Place Order';
+            }
+        } else {
+            // Online Payment
+            localStorage.setItem('checkoutData', JSON.stringify(payload));
+            window.location.href = 'payment.html';
+        }
+    });
+});
+</script>
+</body>
+</html>

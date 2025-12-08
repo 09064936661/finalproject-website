@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { font-family: 'Arial', sans-serif; background-color: #f8f8f8; margin: 0; padding: 0; }
+.payment-container { max-width: 900px; margin: 3rem auto; background: #fff; padding: 2rem; border-radius: 1rem; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+h2 { text-align: center; color: #333; margin-bottom: 2rem; font-size: 2rem; }
+#order-summary { margin-bottom: 2rem; padding: 1rem; border: 1px solid #eee; border-radius: 0.5rem; background-color: #fafafa; }
+#order-summary h3 { margin-top: 0; font-size: 1.6rem; color: #28a745; margin-bottom: 1rem; }
+#order-summary p { margin: 0.5rem 0; font-size: 1.2rem; color: #555; }
+input, select { padding: 1rem; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 0.5rem; width: 100%; box-sizing: border-box; margin-bottom: 1rem; }
+input:focus, select:focus { border-color: #28a745; outline: none; }
+button { padding: 1rem; font-size: 1.4rem; background-color: #28a745; color: #fff; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease; }
+button:hover { opacity: 0.9; transform: translateY(-2px); }
+#credit-card-fields, #paypal-fields { display: none; padding: 1rem; border: 1px solid #eee; border-radius: 0.5rem; background-color: #fafafa; margin-bottom: 1rem; }
+@media (max-width: 768px) { .payment-container { padding: 1rem; margin: 2rem 1rem; } #order-summary p { font-size: 1rem; } input, select, button { font-size: 1rem; } }
+</style>
+</head>
+<body>
+
+<section class="payment-container">
+    <h2>Payment Information</h2>
+
+    <div id="order-summary"></div>
+
+    <!-- Credit Card Form -->
+    <div id="credit-card-fields">
+        <input type="text" id="cc_number" placeholder="Card Number" />
+        <input type="text" id="cc_name" placeholder="Cardholder Name" />
+        <input type="text" id="cc_expiry" placeholder="MM/YY" />
+        <input type="text" id="cc_cvc" placeholder="CVC" />
+    </div>
+
+    <!-- PayPal Form -->
+    <div id="paypal-fields">
+        <input type="email" id="paypal_email" placeholder="PayPal Email" />
+    </div>
+
+    <!-- Pay Button -->
+    <button id="payOrder">Pay & Place Order</button>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const order = JSON.parse(localStorage.getItem('checkoutData'));
+    if (!order) { 
+        alert('No order found. Redirecting to cart.'); 
+        window.location.href = 'checkout.html'; 
+        return; 
+    }
+
+    // Show payment fields based on method
+    const ccFields = document.getElementById('credit-card-fields');
+    const paypalFields = document.getElementById('paypal-fields');
+    if (order.payment_method === 'Credit Card') ccFields.style.display = 'block';
+    if (order.payment_method === 'PayPal') paypalFields.style.display = 'block';
+
+    // Render order summary
+    const summaryDiv = document.getElementById('order-summary');
+    let summaryHtml = '<h3>Order Summary</h3>';
+    order.cart.forEach(item => {
+        summaryHtml += `<p>${item.name} | Size: ${item.size} | Qty: ${item.quantity} | $${(item.price*item.quantity).toFixed(2)}</p>`;
+    });
+    summaryHtml += `<p><strong>Total: $${order.total_amount.toFixed(2)}</strong></p>`;
+    summaryDiv.innerHTML = summaryHtml;
+
+    // Pay & Place Order button
+    document.getElementById('payOrder').addEventListener('click', async () => {
+        // Determine selected payment method dynamically
+        let selectedMethod = '';
+        if (ccFields.style.display === 'block') selectedMethod = 'Credit Card';
+        else if (paypalFields.style.display === 'block') selectedMethod = 'PayPal';
+
+        let payment_info = {};
+        if (selectedMethod === 'Credit Card') {
+            payment_info = {
+                cc_number: document.getElementById('cc_number').value.trim(),
+                cc_name: document.getElementById('cc_name').value.trim(),
+                cc_expiry: document.getElementById('cc_expiry').value.trim(),
+                cc_cvc: document.getElementById('cc_cvc').value.trim()
+            };
+            if (!payment_info.cc_number || !payment_info.cc_name || !payment_info.cc_expiry || !payment_info.cc_cvc) {
+                alert('Please fill out all credit card fields.');
+                return;
+            }
+        } else if (selectedMethod === 'PayPal') {
+            payment_info = { paypal_email: document.getElementById('paypal_email').value.trim() };
+            if (!payment_info.paypal_email) { 
+                alert('Please enter your PayPal email.'); 
+                return; 
+            }
+        } else {
+            alert('Please select a payment method.');
+            return;
+        }
+
+        const finalOrder = { ...order, payment_info, payment_method: selectedMethod };
+
+        try {
+            const response = await fetch('api.php?action=checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalOrder)
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Order placed successfully!');
+                localStorage.removeItem('checkoutData');
+                localStorage.removeItem('cart');
+                window.location.href = 'webpage.html';
+            } else {
+                alert('Order failed: ' + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error processing order.');
+        }
+    });
+});
+</script>
+
+</body>
+</html>
